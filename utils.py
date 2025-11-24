@@ -54,9 +54,13 @@ keywords['keywords'] = parse_json_column(keywords,'keywords')
 
 def format_currency(value):
     """Format budget value and revenue value to currency"""
-    if pd.notnull(value) and value > 0:
-        return f"${value:,.0f}"
-    return "N/A"
+    try:
+        num_value = float(value)
+        if num_value > 0:
+            return f"${num_value:,.0f}"
+        return "N/A"
+    except (ValueError, TypeError):
+        return "N/A"
 
 movies['budget'] = movies['budget'].apply(format_currency)
 movies['revenue'] = movies['revenue'].apply(format_currency)
