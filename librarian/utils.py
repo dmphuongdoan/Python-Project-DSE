@@ -6,8 +6,6 @@ import json
 import ast
 
 credits = pd.read_csv('/Users/phuongdoan/Downloads/dataset/credits.csv')
-#print(df_credits['cast'].head(10))
-#print(type(df_credits['cast'][0]))
 keywords = pd.read_csv('/Users/phuongdoan/Downloads/dataset/keywords.csv')
 movies = pd.read_csv('/Users/phuongdoan/Downloads/dataset/movies_metadata.csv',low_memory = False)
 ratings = pd.read_csv('/Users/phuongdoan/Downloads/dataset/ratings.csv')
@@ -61,8 +59,4 @@ def format_currency(value):
         return "N/A"
     except (ValueError, TypeError):
         return "N/A"
-
-movies['budget'] = movies['budget'].apply(format_currency)
-movies['revenue'] = movies['revenue'].apply(format_currency)
-
-print(movies[['budget','revenue']].head())
+#print(movies[['budget','revenue']].head())
