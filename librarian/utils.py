@@ -6,7 +6,7 @@ warnings.filterwarnings('ignore')
 
 class DataLoader:
     """
-    Utility class để load và xử lý dữ liệu phim từ các file CSV
+    Utility class for loading and processing movie data from CSV files
     """
     
     def __init__(self, 
@@ -15,7 +15,7 @@ class DataLoader:
                  keywords_path: str = '/Users/phuongdoan/Downloads/dataset/keywords.csv',
                  ratings_path: str = '/Users/phuongdoan/Downloads/dataset/ratings.csv'):
         """
-        Khởi tạo DataLoader với các đường dẫn file
+        Initialize DataLoader w file paths
         
         Args:
             movies_path: file path of movies_metadata.csv
@@ -35,76 +35,76 @@ class DataLoader:
     
     def load_all_data(self) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         """
-        Load tất cả các file dữ liệu
+        Load all data files
         
         Returns:
             Tuple(movies_df, credits_df, keywords_df, ratings_df)
         """
-        print("🔄 Đang load dữ liệu...")
+        print("Loading...")
         
         self.movies = self.load_movies()
         self.credits = self.load_credits()
         self.keywords = self.load_keywords()
         self.ratings = self.load_ratings()
         
-        print("✅ Load dữ liệu thành công!")
+        print("Data loaded successfully!")
         return self.movies, self.credits, self.keywords, self.ratings
     
     def load_movies(self) -> pd.DataFrame:
         """Load movies_metadata.csv"""
-        print(f"   📥 Loading movies from: {self.movies_path}")
+        print(f"Loading movies from: {self.movies_path}")
         
         df = pd.read_csv(self.movies_path, low_memory=False)
-        print(f"   ✓ Movies: {len(df)} dòng, {len(df.columns)} cột")
+        print(f"Movies: {len(df)} rows, {len(df.columns)} columns")
         
         return df
     
     def load_credits(self) -> pd.DataFrame:
         """Load credits.csv"""
-        print(f"   📥 Loading credits from: {self.credits_path}")
+        print(f"Loading credits from: {self.credits_path}")
         
         df = pd.read_csv(self.credits_path)
         
-        # Xử lý cast và crew
+        #process cast & crew
         df['cast_names'] = df['cast'].apply(self._extract_names)
         df['crew_names'] = df['crew'].apply(self._extract_names)
         
-        print(f"   ✓ Credits: {len(df)} dòng, {len(df.columns)} cột")
+        print(f"Credits: {len(df)} rows, {len(df.columns)} columns")
         
         return df
     
     def load_keywords(self) -> pd.DataFrame:
         """Load keywords.csv"""
-        print(f"   📥 Loading keywords from: {self.keywords_path}")
+        print(f"Loading keywords from: {self.keywords_path}")
         
         df = pd.read_csv(self.keywords_path)
         
-        # Xử lý keywords
+        #process keyword
         df['keywords'] = df['keywords'].apply(self._extract_keywords)
         
-        print(f"   ✓ Keywords: {len(df)} dòng, {len(df.columns)} cột")
+        print(f"Keywords: {len(df)} rows, {len(df.columns)} columns")
         
         return df
     
     def load_ratings(self) -> pd.DataFrame:
         """Load ratings.csv"""
-        print(f"   📥 Loading ratings from: {self.ratings_path}")
+        print(f"Loading ratings from: {self.ratings_path}")
         
         df = pd.read_csv(self.ratings_path)
-        print(f"   ✓ Ratings: {len(df)} dòng, {len(df.columns)} cột")
+        print(f"Ratings: {len(df)} rows, {len(df.columns)} columns")
         
         return df
     
     @staticmethod
     def _extract_names(data_str) -> str:
         """
-        Extract names từ JSON string (cast hoặc crew)
+        Extract names from JSON string (cast or crew)
         
         Args:
-            data_str: JSON string chứa danh sách cast/crew
+            data_str: JSON string contains cast/crew list
             
         Returns:
-            String chứa các tên cách nhau bằng dấu phẩy
+            String of names separated by commas
         """
         import json
         
@@ -112,7 +112,7 @@ class DataLoader:
             if isinstance(data_str, str):
                 data = json.loads(data_str.replace("'", '"'))
                 names = [person.get('name', '') for person in data if 'name' in person]
-                return ', '.join(names[:5])  # Lấy tối đa 5 người
+                return ', '.join(names[:5])  #take up to 5 names
         except:
             pass
         
@@ -121,13 +121,13 @@ class DataLoader:
     @staticmethod
     def _extract_keywords(keywords_str) -> str:
         """
-        Extract keywords từ JSON string
+        Extract keywords from JSON string
         
         Args:
-            keywords_str: JSON string chứa danh sách keywords
+            keywords_str: JSON string contain keywords list
             
         Returns:
-            String chứa các keywords cách nhau bằng dấu phẩy
+            String contain keywords separated by commas
         """
         import json
         
@@ -135,14 +135,14 @@ class DataLoader:
             if isinstance(keywords_str, str):
                 data = json.loads(keywords_str.replace("'", '"'))
                 keywords = [keyword.get('name', '') for keyword in data if 'name' in keyword]
-                return ', '.join(keywords[:10])  # Lấy tối đa 10 keywords
+                return ', '.join(keywords[:10])  #take up to 10 keywords
         except:
             pass
         
         return ''
     
     def get_data_info(self):
-        """In thông tin chi tiết về các DataFrame"""
+        """Print detailed information abouth the DataFrame"""
         if self.movies is not None:
             print("\n" + "="*80)
             print("MOVIES DATAFRAME INFO")
@@ -169,10 +169,10 @@ class DataLoader:
     
     def get_basic_stats(self) -> dict:
         """
-        Lấy thống kê cơ bản về dữ liệu
+        Get basic stats about the data
         
         Returns:
-            Dictionary chứa các thống kê
+            Dictionary contain stats
         """
         stats = {
             'total_movies': len(self.movies) if self.movies is not None else 0,
@@ -190,7 +190,7 @@ class DataLoader:
 def validate_data(movies_df: pd.DataFrame, credits_df: pd.DataFrame, 
                  keywords_df: pd.DataFrame, ratings_df: pd.DataFrame) -> bool:
     """
-    Kiểm tra tính hợp lệ của dữ liệu
+    Check the integrity of the data
     
     Args:
         movies_df: Movies DataFrame
@@ -199,53 +199,53 @@ def validate_data(movies_df: pd.DataFrame, credits_df: pd.DataFrame,
         ratings_df: Ratings DataFrame
         
     Returns:
-        True nếu dữ liệu hợp lệ, False nếu không
+        True if data is valid, False otherwise
     """
     checks = []
     
-    # Kiểm tra movies
+    #check movies
     if 'id' not in movies_df.columns:
-        print("❌ Movies: Thiếu cột 'id'")
+        print("Movies: missing column 'id'")
         checks.append(False)
     else:
         checks.append(True)
     
-    # Kiểm tra credits
+    #check credits
     if 'id' not in credits_df.columns:
-        print("❌ Credits: Thiếu cột 'id'")
+        print("Credits: missing column 'id'")
         checks.append(False)
     else:
         checks.append(True)
     
-    # Kiểm tra keywords
+    #check keywords
     if 'id' not in keywords_df.columns:
-        print("❌ Keywords: Thiếu cột 'id'")
+        print("Keywords: missing column 'id'")
         checks.append(False)
     else:
         checks.append(True)
     
-    # Kiểm tra ratings
+    #check ratings
     if 'userId' not in ratings_df.columns or 'movieId' not in ratings_df.columns:
-        print("❌ Ratings: Thiếu cột 'userId' hoặc 'movieId'")
+        print("Ratings: missing column 'userId' or 'movieId'")
         checks.append(False)
     else:
         checks.append(True)
     
     if all(checks):
-        print("✅ Dữ liệu hợp lệ!")
+        print("Data is valid!")
         return True
     
     return False
 
 def create_data_summary(movies_df: pd.DataFrame) -> pd.DataFrame:
     """
-    Tạo tóm tắt dữ liệu về phim
+    Create a summary of movie data
     
     Args:
         movies_df: Movies DataFrame
         
     Returns:
-        DataFrame chứa tóm tắt
+        DataFrame containing summary
     """
     summary = pd.DataFrame({
         'Metric': [
@@ -274,7 +274,7 @@ def create_data_summary(movies_df: pd.DataFrame) -> pd.DataFrame:
 
 def quick_load():
     """
-    Cách sử dụng đơn giản nhất
+    simplest way to use the Dataloader
     
     Returns:
         Tuple(movies, credits, keywords, ratings)
